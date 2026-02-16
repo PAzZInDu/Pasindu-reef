@@ -70,7 +70,7 @@ tzdata==2025.2
 urllib3==1.26.20
 xlsxwriter==3.2.9
 zstandard==0.25.0
-
+opencv-python==4.13.0.92
 
 
 paddleocr==3.3.2
