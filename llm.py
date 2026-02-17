@@ -80,7 +80,7 @@ def encode_image(image_path):
 
 def image_label_generator(image_local_path: str, prompt: str = SLATE_IMAGE_INSTRUCTIONS):
     box_coordinates = ocr_pipe(image_local_path)
-    st.toast("Box coordinates are printed")
+    st.toast("Box coordinates are printed", icon="✅")
 
     cropped_img_path = './ocr_outputs/cropped.png'
     image_data = encode_image(cropped_img_path)
