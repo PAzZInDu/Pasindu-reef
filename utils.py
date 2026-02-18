@@ -363,7 +363,7 @@ def substrate_excel_creation(response_data: dict, info_data: dict, excel_name: s
         rows_3 += 1
 
     worksheet.merge_range("L50:L51", "Mean count", lower_table_cell_border_2)
-    worksheet.merge_range("N50:M51", "Mean % per segment", lower_table_cell_border_2)
+    worksheet.merge_range("M50:N51", "Mean % per segment", lower_table_cell_border_2)
     worksheet.merge_range("O50:O51", "SD", lower_table_cell_border_2)
     worksheet.merge_range("P50:P51", "%     S1", lower_table_cell_border_2)
     worksheet.merge_range("Q50:Q51", "%     S2", lower_table_cell_border_2)
