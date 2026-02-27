@@ -106,8 +106,6 @@ def extract_single_attributes(selected_set: list, index_val: int) -> list:
 
 
 def substrate_excel_creation(response_data: dict, info_data: dict, excel_name: str):
-    information_data = info_data
-    print(f"========={info_data}===========")
     selected_set_one = response_data["segment_one"]
     selected_set_two = response_data["segment_two"]
     selected_set_three = response_data["segment_three"]
@@ -216,7 +214,7 @@ def substrate_excel_creation(response_data: dict, info_data: dict, excel_name: s
     worksheet.merge_range("A14:D14", "0 - 19.5m", cell_bold)
     worksheet.merge_range("E14:H14", "25 - 44.5m", cell_bold)
     worksheet.merge_range("I14:L14", "50 - 69.5m", cell_bold)
-    worksheet.merge_range("M14:P14", "75 - 94.5", cell_bold)
+    worksheet.merge_range("M14:P14", "75 - 94.5m", cell_bold)
 
     info_col = 3
     info_row = 0
@@ -231,23 +229,23 @@ def substrate_excel_creation(response_data: dict, info_data: dict, excel_name: s
         "time",
     ]
 
-    for i in range(0, len(info_fields), 2):
+    for field_idx in range(0, len(info_fields), 2):
         worksheet.merge_range(
             info_row,        # row index (0-based)
             info_col,
             info_row,
             info_col + 4,
-            info_data.get(info_fields[i], ""),
+            info_data.get(info_fields[field_idx], ""),
             border
         )
 
-        if i + 1 < len(info_fields):
+        if field_idx + 1 < len(info_fields):
             worksheet.merge_range(
                 info_row,        # row index (0-based)
                 info_col+8,
                 info_row,
                 info_col + 12,
-                info_data.get(info_fields[i+1], ""),
+                info_data.get(info_fields[field_idx+1], ""),
                 border
             )
         info_row += 1
@@ -329,38 +327,56 @@ def substrate_excel_creation(response_data: dict, info_data: dict, excel_name: s
 
     subs_list_ = ["HC", "SC", "RKC", "NIA", "SP", "RC", "RB", "SD", "SI", "OT"]
 
-    rows_1 = 51
-    for sub in subs_list_:
-        for k in range(0,10,2):
-            worksheet.write(rows_1, k, f"{sub}", lower_table_cell_normal)
-        rows_1 += 1
+    summary_row_index = 51
+    for substrate_code in subs_list_:
+        for summary_column_index in range(0, 10, 2):
+            worksheet.write(summary_row_index, summary_column_index, f"{substrate_code}", lower_table_cell_normal)
+        summary_row_index += 1
 
 
-    rows_2 = 51
-    for sub in subs_list_:
-        worksheet.write(rows_2, 1, f'=COUNTIF(B15:B34:D15:D34,"{sub}")', lower_table_left_border_normal)
-        worksheet.write(rows_2, 3, f'=COUNTIF(F15:F34:H15:H34,"{sub}")', lower_table_left_border_normal)
-        worksheet.write(rows_2, 5, f'=COUNTIF(J15:J34:L15:L34,"{sub}")', lower_table_left_border_normal)
-        worksheet.write(rows_2, 7, f'=COUNTIF(N15:N34:P15:P34,"{sub}")', lower_table_left_border_normal)
-        worksheet.write(rows_2, 9, f"=(B{rows_2+1}+D{rows_2+1}+F{rows_2+1}+H{rows_2+1})", lower_table_left_border_normal)
-        rows_2 += 1
+    summary_counts_row_index = 51
+    for substrate_code in subs_list_:
+        worksheet.write(summary_counts_row_index, 1, f'=COUNTIF(B15:B34:D15:D34,"{substrate_code}")', lower_table_left_border_normal)
+        worksheet.write(summary_counts_row_index, 3, f'=COUNTIF(F15:F34:H15:H34,"{substrate_code}")', lower_table_left_border_normal)
+        worksheet.write(summary_counts_row_index, 5, f'=COUNTIF(J15:J34:L15:L34,"{substrate_code}")', lower_table_left_border_normal)
+        worksheet.write(summary_counts_row_index, 7, f'=COUNTIF(N15:N34:P15:P34,"{substrate_code}")', lower_table_left_border_normal)
+        worksheet.write(summary_counts_row_index, 9, f"=(B{summary_counts_row_index+1}+D{summary_counts_row_index+1}+F{summary_counts_row_index+1}+H{summary_counts_row_index+1})", lower_table_left_border_normal)
+        summary_counts_row_index += 1
 
     
     column_letters = ['B', 'D', 'F', 'H', 'J']
-    t = 0
-    for m in range(0,10,2):
-        worksheet.write(61, m, '#', hash_tag)
-        worksheet.write(61, m+1, f'={column_letters[t]}52+{column_letters[t]}53+{column_letters[t]}54+{column_letters[t]}55+{column_letters[t]}56+{column_letters[t]}57+{column_letters[t]}58+{column_letters[t]}59+{column_letters[t]}60+{column_letters[t]}61', no_left_border)
-        t += 1
+    column_letter_index = 0
+    for summary_column_index in range(0, 10, 2):
+        worksheet.write(61, summary_column_index, '#', hash_tag)
+        worksheet.write(
+            61,
+            summary_column_index + 1,
+            f'={column_letters[column_letter_index]}52+'
+            f'{column_letters[column_letter_index]}53+'
+            f'{column_letters[column_letter_index]}54+'
+            f'{column_letters[column_letter_index]}55+'
+            f'{column_letters[column_letter_index]}56+'
+            f'{column_letters[column_letter_index]}57+'
+            f'{column_letters[column_letter_index]}58+'
+            f'{column_letters[column_letter_index]}59+'
+            f'{column_letters[column_letter_index]}60+'
+            f'{column_letters[column_letter_index]}61',
+            no_left_border
+        )
+        column_letter_index += 1
 
     # Lower second table
     lower_table_cell_border_2 = workbook.add_format({ 'border': 2, 'bold': True,'font_name': 'Arial', 'font_size': 10, 'align': 'center'})
     
-
-    rows_3 = 51
-    for sub in subs_list_:
-        worksheet.write(rows_3, 10, f"{sub}", workbook.add_format({ 'font_name': 'Arial', 'align': 'right'}))
-        rows_3 += 1
+    summary_label_row_index = 51
+    for substrate_code in subs_list_:
+        worksheet.write(
+            summary_label_row_index,
+            10,
+            f"{substrate_code}",
+            workbook.add_format({'font_name': 'Arial', 'align': 'right'})
+        )
+        summary_label_row_index += 1
 
     worksheet.merge_range("L50:L51", "Mean count", lower_table_cell_border_2)
     worksheet.merge_range("M50:N51", "Mean % per segment", lower_table_cell_border_2)
